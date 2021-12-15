@@ -3,10 +3,16 @@ import React from 'react'
 import Info from './components/info';
 import uniqid from 'uniqid'
 import Header from './components/header'
+import Container from 'react-bootstrap/Container'
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
+import InputGroup from 'react-bootstrap/InputGroup'
+import Form from 'react-bootstrap/Form';
+
 
 function App() {
 
-  const [name, setName] = React.useState({firstName: '', lastName : ''})
+  const [info, setInfo] = React.useState({firstName: '', lastName : '', email : '', areaCode: '', areaCode: '', phoneNumber : '', description: ''})
   const [edL, setEdL] = React.useState([])
 
   function $(x){
@@ -16,14 +22,13 @@ function App() {
   function handleChange(e){
       const {name, value, id} = e.target
       
-      setName(prevState => ({...prevState, [name]:value}))
+      setInfo(prevState => ({...prevState, [name]:value}))
 
       setEdL(prevState => {
         const arr = []
         for(let i=0; i<prevState.length; i++) {
           const currentInput = prevState[i]
           if(currentInput.id === e.target.parentElement.id) {
-            console.log('there is a match')
             const updatedInput = {
               ...currentInput,
               [name]:value
@@ -42,41 +47,53 @@ function App() {
   }
 
   function handleDelete(e){
-    console.log('The id of this edit click is: ', e.target.id)
-    console.log('previous list: ', edL)
     setEdL(prevState => prevState.filter(each => each.id != e.target.id))
-    console.log('new list: ', edL)
-
   }
 
   return(
     <div className='main-container'>
+      
       <div className='form'>
-          <div className='container'>
-              <input type='text' name='firstName' placeHolder='First name'onChange={handleChange} value={name.firstName}/>
-              <input type='text' name='lastName' placeHolder='Last name'onChange={handleChange} value={name.lastName}/>
-          </div>   
+        <Header />
+          <Form>
+            <Form.Control as='input' type='text' name='firstName' placeHolder='First name'onChange={handleChange} value={info.firstName}/>  
+            <Form.Control as='input' type='text' name='lastName' placeHolder='Last name'onChange={handleChange} value={info.lastName}/>
+            <Form.Control as='input' type='email' name='email' placeHolder='Email'onChange={handleChange} value={info.email}/>
+            <Container fluid>
+                <Row>
+                  <Col><Form.Control as='input' type='tel' name='areaCode' placeHolder='Area Code'onChange={handleChange} value={info.areaCode} maxlength='3'/></Col>
+                  <Col xs={8}><Form.Control as='input' type='tel' name='phoneNumber' placeHolder='Phone Number'onChange={handleChange} value={info.phoneNumber} maxlength='7' ></Form.Control></Col>
+                </Row>
+              </Container>
+            <Form.Control as='textarea' name='description' onChange={handleChange} value={info.description} rows={5}/>
+
+          </Form>
+
+              
+
+
           <br/>
           <div className='container'>
               <button onClick={handleAdd}>Add</button>
+              <h3>Education</h3>
               {edL.map(each=>
-              <div key={each.id}
+              <div key={each.id} className="education-card"
               id = {each.id}>
-                <input type='text' name='name' placeHolder='Uni Name' onChange={handleChange} />
+                <input type='text' name='universityName' placeHolder='University Name' onChange={handleChange} />
                 <input type='date' name='year' placeHolder='Year' onChange={handleChange} />  
                 <button id={each.id} onClick={handleDelete}>Delete</button>
               </div>
               )}
               
-      </div>  
+          </div>  
       </div>   
 
           <div className='cv-preview'>
-            <Header />
-            <Info user={name} />
+            
+            <Info user={info} />
             {edL.map(each=>
               <div key={each.id}>
-                <div>{each.name}</div>  
+                <div>{each.universityName}</div>  
                 <div>{each.year}</div>  
               </div>
               )}
